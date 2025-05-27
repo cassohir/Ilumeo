@@ -1,10 +1,23 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { DataSource } from 'typeorm';
+import { TypeormModule } from './infrastructure/config/typeorm/typeorm.module';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 
 @Module({
-  imports: [],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: './.env/.env',
+    }),
+    TypeormModule,
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private dataSource: DataSource) {}
+  configure(consumer: MiddlewareConsumer) {
+    // ...
+  }
+}
