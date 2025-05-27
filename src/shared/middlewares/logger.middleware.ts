@@ -1,12 +1,11 @@
-import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
+import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
+import logger from '@/infrastructure/logger/logger.config';
 
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
-  private readonly logger = new Logger('LOGGER');
-
   use(request: Request, _: Response, next: NextFunction) {
-    this.logger.log(`${request.method.toUpperCase()} ${request.url}`, {
+    logger.info(`${request.method.toUpperCase()} ${request.url}`, {
       request: {
         id: request.id,
         method: request.method,
