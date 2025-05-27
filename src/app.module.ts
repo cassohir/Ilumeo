@@ -7,6 +7,7 @@ import { APP_PIPE } from '@nestjs/core';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { AppModules } from './infrastructure/modules.module';
 import { AddRequestId } from './shared/middlewares/add-request-id.middleware';
+import { LoggerMiddleware } from './shared/middlewares/logger.middleware';
 
 @Module({
   imports: [
@@ -29,5 +30,6 @@ export class AppModule {
   constructor(private dataSource: DataSource) {}
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(AddRequestId).forRoutes('*');
+    consumer.apply(LoggerMiddleware).forRoutes('*');
   }
 }
