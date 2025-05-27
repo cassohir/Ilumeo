@@ -1,0 +1,29 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    ports:
+      - '9229:9229'
+    command: yarn start:debug
+    depends_on:
+      - postgres-db
+    env_file:
+      - .env/.env
+
+  postgres-db:
+    image: postgres:latest
+    env_file:
+      - .env/.env
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+volumes:
+  postgres-data:
