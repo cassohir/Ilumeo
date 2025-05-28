@@ -19,6 +19,9 @@ const config: DataSourceOptions = {
   logging: true,
   migrationsRun: true,
   migrationsTableName: 'pg_migrations',
+  extra: {
+    options: '-c search_path=inside,public',
+  },
 };
 
 console.log(config);
