@@ -17,13 +17,7 @@ const config: DataSourceOptions = {
   migrations: [__dirname + '/migrations/*{.ts,.js}'],
   synchronize: false,
   logging: true,
-  migrationsRun: true,
-  migrationsTableName: 'pg_migrations',
-  extra: {
-    options: '-c search_path=inside,public',
-  },
+  schema: 'inside',
 };
-
-console.log(config);
 
 export default new DataSource(config);

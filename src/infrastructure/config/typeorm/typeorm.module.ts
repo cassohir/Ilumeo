@@ -16,9 +16,12 @@ export const getTypeOrmModuleOptions = (
     password: configService.getDatabasePassword(),
     database: configService.getDatabaseName(),
     entities: [__dirname + '/../../../domain/entities/*.entity{.ts,.js}'],
+    schema: 'inside',
     // synchronize: configService.getDatabaseSync(),
     migrations: ['./migrations/*{.ts,.js}'],
+    migrationsTableName: 'migrations',
   };
+  console.log(options);
   return options;
 };
 
