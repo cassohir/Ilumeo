@@ -8,6 +8,9 @@ import { ZodValidationPipe } from 'nestjs-zod';
 import { AppModules } from './infrastructure/modules.module';
 import { AddRequestId } from './shared/middlewares/add-request-id.middleware';
 import { LoggerMiddleware } from './shared/middlewares/logger.middleware';
+import { ScheduleModule } from '@nestjs/schedule';
+import { CacheModule } from '@nestjs/cache-manager';
+import { RedisOptions } from './infrastructure/config/database/redis.config';
 
 @Module({
   imports: [
@@ -15,6 +18,8 @@ import { LoggerMiddleware } from './shared/middlewares/logger.middleware';
       isGlobal: true,
       envFilePath: './.env/.env',
     }),
+    ScheduleModule.forRoot(),
+    CacheModule.registerAsync(RedisOptions),
     TypeormModule,
     ...AppModules,
   ],

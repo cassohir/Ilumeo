@@ -10,3 +10,11 @@ export const config = {
   APP_SECRET: 'APP_SECRET',
   EXPIRATION_TIME: 'EXPIRATION_TIME',
 };
+
+export const cache = {
+  HOST: 'REDIS_HOST',
+  PORT: 'REDIS_PORT',
+  PASSWORD: 'REDIS_PASSWORD',
+  USER_NAME: 'REDIS_USERNAME',
+  REDIS_URL: 'REDIS_URL',
+};
