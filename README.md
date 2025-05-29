@@ -26,6 +26,8 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## psql -h localhost -p 5432 -U postgres -d postgres -f ./case_tech_lead.sql
+
 ## Project setup
 
 ```bash
