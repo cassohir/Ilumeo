@@ -10,16 +10,14 @@ import {
 import { format, parseISO } from 'date-fns';
 import type { ConversionData } from './conversion-dashboard.component';
 import { Skeleton } from './ui/skeleton';
+import { ptBR } from 'date-fns/locale';
 
 interface ConversionChartProps {
   data: ConversionData[];
   loading: boolean;
 }
 
-export const ConversionChart: React.FC<ConversionChartProps> = ({
-  data,
-  loading,
-}) => {
+export const ConversionChart = ({ data, loading }: ConversionChartProps) => {
   if (loading) {
     return (
       <div className="space-y-4">
@@ -40,15 +38,19 @@ export const ConversionChart: React.FC<ConversionChartProps> = ({
     );
   }
 
-  const chartData = data.map((item) => ({
-    ...item,
-    date: format(parseISO(item.day), 'MMM dd'),
-    fullDate: item.day,
-    conversionRate: Number(item.conversionRate),
-  }));
+  const chartData = data.map((item) => {
+    const interval =
+      item.day || item.week || item.month || new Date().toISOString();
+
+    return {
+      ...item,
+      date: format(parseISO(interval), 'MMM dd', { locale: ptBR }),
+      fullDate: interval,
+      conversionRate: Number(item.conversionRate),
+    };
+  });
 
   const CustomTooltip = ({ active, payload, label }: any) => {
-    console.log('Tooltip payload:', payload);
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
@@ -114,9 +116,28 @@ export const ConversionChart: React.FC<ConversionChartProps> = ({
 
       <div className="mt-4 text-center">
         <p className="text-sm text-slate-600">
-          Showing {data.length} data points from{' '}
-          {format(parseISO(data[0]?.day), 'MMM dd, yyyy')} to{' '}
-          {format(parseISO(data[data.length - 1]?.day), 'MMM dd, yyyy')}
+          Mostrando {data.length} pontos de dados de{' '}
+          {format(
+            parseISO(
+              data[0]?.day ??
+                data[0]?.week ??
+                data[0]?.month ??
+                new Date().toISOString(),
+            ),
+            'dd MMM yyyy',
+            { locale: ptBR },
+          )}{' '}
+          até{' '}
+          {format(
+            parseISO(
+              data[data.length - 1]?.day ??
+                data[data.length - 1]?.week ??
+                data[data.length - 1]?.month ??
+                new Date().toISOString(),
+            ),
+            'dd MMM yyyy',
+            { locale: ptBR },
+          )}
         </p>
       </div>
     </div>

@@ -31,15 +31,19 @@ export interface ConversionRateEvolution {
 
 export interface ConversionData {
   channel: string;
-  day: string;
+  day?: string;
+  week?: string;
+  month?: string;
   conversionRate: number;
   totalSends: number;
   totalConverts: number;
 }
 
+type Interval = 'daily' | 'weekly' | 'monthly';
+
 const ConversionDashboard = () => {
   const [selectedChannel, setSelectedChannel] = useState<string>('email');
-  const [selectedInterval, setSelectedInterval] = useState<string>('day');
+  const [selectedInterval, setSelectedInterval] = useState<Interval>('daily');
 
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: new Date(2025, 4, 1), // 1 de maio de 2025
@@ -57,12 +61,12 @@ const ConversionDashboard = () => {
     startDate: dateRange?.from ?? new Date(),
     endDate: dateRange?.to ?? new Date(),
     channel: selectedChannel,
-    limit: 100,
+    interval: selectedInterval,
   });
 
   const { data } = conversionRateEvolution;
 
-  console.log(data);
+  // console.log(data);
 
   const averageConversionRate =
     data.length > 0
@@ -81,14 +85,14 @@ const ConversionDashboard = () => {
   const channels = [
     { value: 'email', label: 'Email' },
     { value: 'wpp', label: 'WhatsApp' },
-    { value: 'MOBILE', label: 'Mobile' },
+    { value: 'MOBILE', label: 'Celular' },
     { value: 'all', label: 'Geral' },
   ];
 
   const intervals = [
-    { value: 'day', label: 'Diário' },
-    { value: 'week', label: 'Semanal' },
-    { value: 'month', label: 'Mensal' },
+    { value: 'daily', label: 'Diário' },
+    { value: 'weekly', label: 'Semanal' },
+    { value: 'monthly', label: 'Mensal' },
   ];
 
   return (
@@ -148,7 +152,9 @@ const ConversionDashboard = () => {
 
                 <Select
                   value={selectedInterval}
-                  onValueChange={setSelectedInterval}
+                  onValueChange={(value) =>
+                    setSelectedInterval(value as Interval)
+                  }
                 >
                   <SelectTrigger className="bg-white border-slate-200 hover:border-slate-300 transition-colors">
                     <SelectValue placeholder="Selecione o intervalo" />
@@ -227,7 +233,7 @@ const ConversionDashboard = () => {
               Evolução da Taxa de Conversão
             </CardTitle>
             <CardDescription>
-              Taxa de conversão diária para o canal de{' '}
+              Taxa de conversão para o canal de{' '}
               {channels.find((c) => c.value === selectedChannel)?.label}
             </CardDescription>
           </CardHeader>
