@@ -1,4 +1,7 @@
-import { ConversionRateQueryDto } from '@/shared/dtos/conversion-rate.dto';
+import {
+  ConversionRateQueryDto,
+  Interval,
+} from '@/shared/dtos/conversion-rate.dto';
 import { GetConversionRateEvolutionByFiltersUseCase } from '@/usecases/get-conversion-rate-evolution-by-filters.usecase';
 import { Injectable } from '@nestjs/common';
 import { CacheService } from './cache.service';
@@ -7,19 +10,22 @@ import { CacheService } from './cache.service';
 export class ConversionRateService {
   constructor(
     private readonly cacheService: CacheService,
-    private readonly getConversionRateEvolutionByFilters: GetConversionRateEvolutionByFiltersUseCase,
+    private readonly getDailyConversionRateEvolutionByFilters: GetConversionRateEvolutionByFiltersUseCase,
   ) {}
   async getConversionRateEvolution(query: ConversionRateQueryDto) {
-    const { channel, startDate, endDate, page, limit } = query;
-    const cacheKey = `conv:${channel}:${startDate}:${endDate}:${page}:${limit}`;
+    const { channel, startDate, endDate, page, limit, interval } = query;
+    const cacheKey = `conv:${interval}:{channel}:${startDate}:${endDate}:${page}:${limit}`;
 
     const cachedData = await this.cacheService.get(cacheKey);
     if (cachedData) {
       return cachedData;
     }
+    switch (interval) {
+      case Interval.DAILY:
+    }
 
     const conversionRateEvolutionRate =
-      await this.getConversionRateEvolutionByFilters.execute(query);
+      await this.getDailyConversionRateEvolutionByFilters.execute(query);
 
     const result = {
       data: conversionRateEvolutionRate,

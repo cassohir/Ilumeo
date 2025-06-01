@@ -8,11 +8,18 @@ export enum Channel {
   ALL = 'all',
 }
 
+export enum Interval {
+  DAILY = 'daily',
+  WEEKLY = 'weekly',
+  MONTHLY = 'monthly',
+}
+
 export const conversionRateSchema = z
   .object({
     channel: z.nativeEnum(Channel),
     startDate: z.string().date(),
     endDate: z.string().date(),
+    interval: z.nativeEnum(Interval).optional().default(Interval.DAILY),
     page: z.string().regex(/^\d+$/).default('1'),
     limit: z.string().regex(/^\d+$/).default('30'),
   })

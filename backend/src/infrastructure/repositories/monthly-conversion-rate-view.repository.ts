@@ -1,5 +1,6 @@
-import { DailyConversionRateView } from '@/domain/entities/inside-schema/daily-conversion-rate.view.entity';
-import { IDailyConversionRateViewRepository } from '@/domain/interfaces/daily-conversion-rate-view.interface';
+import { MonthlyConversionRateView } from '@/domain/entities/inside-schema/monthly-conversion-rate.view.entity';
+
+import { IMonthlyConversionRateViewRepository } from '@/domain/interfaces/monthly-conversion-rate.view.interface';
 import {
   Channel,
   TemporalEvolutionConversionRateParamsDto,
@@ -7,20 +8,20 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-export default class DailyConversionRateViewRepository
-  implements IDailyConversionRateViewRepository
+export default class MonthlyConversionRateViewRepository
+  implements IMonthlyConversionRateViewRepository
 {
   constructor(
-    @InjectRepository(DailyConversionRateView)
-    private ormRepository: Repository<DailyConversionRateView>,
+    @InjectRepository(MonthlyConversionRateView)
+    private ormRepository: Repository<MonthlyConversionRateView>,
   ) {}
 
-  async find(filters: any): Promise<DailyConversionRateView[]> {
+  async find(filters: any): Promise<MonthlyConversionRateView[]> {
     console.log('find', filters);
     return this.ormRepository.find(filters);
   }
 
-  async getDailyEvolutionConversionRateByChannel({
+  async getMonthlyEvolutionConversionRateByChannel({
     channel,
     startDate,
     endDate,
@@ -31,23 +32,29 @@ export default class DailyConversionRateViewRepository
       .createQueryBuilder('mv')
       .select([
         'mv.origin            AS channel',
-        'mv.day               AS day',
+        'mv.month               AS month',
         'CAST(mv.total_sends AS INTEGER)      AS "totalSends"',
         'CAST(mv.total_converts AS INTEGER)   AS "totalConverts"',
         'ROUND(CAST(mv.total_converts AS DECIMAL) / NULLIF(mv.total_sends, 0) * 100, 2) AS "conversionRate"',
       ])
-      .where('mv.day BETWEEN :startDate AND :endDate', { startDate, endDate });
+      .where('mv.month BETWEEN :startDate AND :endDate', {
+        startDate,
+        endDate,
+      });
 
     if (channel !== Channel.ALL) {
       qb.andWhere('mv.origin = :channel', { channel });
     }
 
-    qb.orderBy('mv.day', 'ASC').limit(limit).offset(offset);
+    qb.orderBy('mv.month', 'ASC').limit(limit).offset(offset);
 
     return await qb.getRawMany();
   }
 
-  async index(page: number, limit: number): Promise<DailyConversionRateView[]> {
+  async index(
+    page: number,
+    limit: number,
+  ): Promise<MonthlyConversionRateView[]> {
     console.log('index', { page, limit });
     return await this.ormRepository.find();
   }

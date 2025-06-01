@@ -26,11 +26,11 @@ export abstract class Repository<M> {
    */
   abstract index(page: number, limit: number): Promise<M[]>;
 
-  /**
-   * Lists all models that match a given condition (filter). If none is provided, all models are returned
-   *
-   * @template M a domain model
-   * @return {Promise<M[]>} a promise that resolves to an array of domain models
-   */
-  abstract find(filters: Filters<M>): Promise<M[]>;
+  // /**
+  //  * Lists all models that match a given condition (filter). If none is provided, all models are returned
+  //  *
+  //  * @template M a domain model
+  //  * @return {Promise<M[]>} a promise that resolves to an array of domain models
+  //  */
+  // abstract find(filters: Filters<M>): Promise<M[]>;
 }
