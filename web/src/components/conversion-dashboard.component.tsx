@@ -39,6 +39,8 @@ export interface ConversionData {
 
 const ConversionDashboard = () => {
   const [selectedChannel, setSelectedChannel] = useState<string>('email');
+  const [selectedInterval, setSelectedInterval] = useState<string>('day');
+
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: new Date(2025, 4, 1), // 1 de maio de 2025
     to: new Date(2025, 4, 30), // 30 de maio de 2025
@@ -81,6 +83,12 @@ const ConversionDashboard = () => {
     { value: 'wpp', label: 'WhatsApp' },
     { value: 'MOBILE', label: 'Mobile' },
     { value: 'all', label: 'Geral' },
+  ];
+
+  const intervals = [
+    { value: 'day', label: 'Diário' },
+    { value: 'week', label: 'Semanal' },
+    { value: 'month', label: 'Mensal' },
   ];
 
   return (
@@ -133,6 +141,27 @@ const ConversionDashboard = () => {
                 </Select>
               </div>
 
+              <div className="flex-1 space-y-2">
+                <label className="text-sm font-medium text-slate-700">
+                  Intervalo Temporal
+                </label>
+
+                <Select
+                  value={selectedInterval}
+                  onValueChange={setSelectedInterval}
+                >
+                  <SelectTrigger className="bg-white border-slate-200 hover:border-slate-300 transition-colors">
+                    <SelectValue placeholder="Selecione o intervalo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {intervals.map((interval) => (
+                      <SelectItem key={interval.value} value={interval.value}>
+                        {interval.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               <div className="flex-1 space-y-2">
                 <label className="text-sm font-medium text-slate-700">
                   Intervalo de Datas
