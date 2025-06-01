@@ -9,12 +9,28 @@ import {
   PATH,
   VERSION,
 } from './infrastructure/config/environment/swagger.config';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
+  const env = new ConfigService();
+
+  const whiteList = env.get<string>('CORS_URLS').split(' ') || [];
+
   const app = await NestFactory.create(AppModule);
 
   app.enableVersioning({
     type: VersioningType.URI,
+  });
+
+  app.enableCors({
+    origin: (origin, callback) => {
+      console.log('origin: ', origin);
+      if (!origin || whiteList.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`URL blocked by CORS: ${origin}`));
+      }
+    },
   });
 
   const config = new DocumentBuilder()

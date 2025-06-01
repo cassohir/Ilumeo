@@ -30,11 +30,11 @@ export default class DailyConversionRateViewRepository
     const qb = this.ormRepository
       .createQueryBuilder('mv')
       .select([
-        'mv.origin       AS channel',
-        'mv.day          AS day',
-        'mv.total_sends  AS total_sends',
-        'mv.total_converts   AS total_converts',
-        'ROUND(CAST(mv.total_converts AS DECIMAL) / NULLIF(mv.total_sends, 0) * 100, 2) AS conversion_rate',
+        'mv.origin            AS channel',
+        'mv.day               AS day',
+        'CAST(mv.total_sends AS INTEGER)      AS "totalSends"',
+        'CAST(mv.total_converts AS INTEGER)   AS "totalConverts"',
+        'ROUND(CAST(mv.total_converts AS DECIMAL) / NULLIF(mv.total_sends, 0) * 100, 2) AS "conversionRate"',
       ])
       .where('mv.day BETWEEN :startDate AND :endDate', { startDate, endDate });
 
