@@ -20,12 +20,21 @@ import { DatePickerWithRange } from './date-picker-with-range.component';
 import { ConversionChart } from './conversion-chart';
 import { useConversionRates } from '@/hooks/useConversionRates';
 
+export interface ConversionRateEvolution {
+  data: ConversionData[];
+  pagination: {
+    totalItems: number;
+    limit: number;
+    page: number;
+  };
+}
+
 export interface ConversionData {
   channel: string;
   day: string;
   conversionRate: number;
   totalSends: number;
-  totalConversions: number;
+  totalConverts: number;
 }
 
 const ConversionDashboard = () => {
@@ -36,7 +45,10 @@ const ConversionDashboard = () => {
   });
 
   const {
-    data = [],
+    data: conversionRateEvolution = {
+      data: [],
+      pagination: { totalItems: 0, limit: 0, page: 0 },
+    },
     isLoading,
     refetch,
   } = useConversionRates({
@@ -46,24 +58,29 @@ const ConversionDashboard = () => {
     limit: 100,
   });
 
-  // Cálculos de métricas agregadas
+  const { data } = conversionRateEvolution;
+
+  console.log(data);
+
   const averageConversionRate =
     data.length > 0
       ? (
-          data.reduce((sum, item) => sum + item.conversionRate, 0) / data.length
+          data.reduce((sum, item) => sum + Number(item.conversionRate), 0) /
+          data.length
         ).toFixed(2)
       : '0.00';
 
   const totalConversions = data.reduce(
-    (sum, item) => sum + item.totalConversions,
+    (sum, item) => sum + Number(item.totalConverts),
     0,
   );
   const totalSends = data.reduce((sum, item) => sum + item.totalSends, 0);
 
   const channels = [
     { value: 'email', label: 'Email' },
-    { value: 'whatsapp', label: 'WhatsApp' },
-    { value: 'mobile', label: 'Mobile' },
+    { value: 'wpp', label: 'WhatsApp' },
+    { value: 'MOBILE', label: 'Mobile' },
+    { value: 'all', label: 'Geral' },
   ];
 
   return (
@@ -158,9 +175,7 @@ const ConversionDashboard = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold">
-                {totalConversions.toLocaleString()}
-              </div>
+              <div className="text-3xl font-bold">{totalConversions}</div>
             </CardContent>
           </Card>
 
@@ -171,9 +186,7 @@ const ConversionDashboard = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold">
-                {totalSends.toLocaleString()}
-              </div>
+              <div className="text-3xl font-bold">{totalSends}</div>
             </CardContent>
           </Card>
         </div>

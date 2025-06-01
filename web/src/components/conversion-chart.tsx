@@ -44,24 +44,21 @@ export const ConversionChart: React.FC<ConversionChartProps> = ({
     ...item,
     date: format(parseISO(item.day), 'MMM dd'),
     fullDate: item.day,
-    conversion_rate: Number(item.conversion_rate.toFixed(2)),
+    conversionRate: Number(item.conversionRate),
   }));
 
   const CustomTooltip = ({ active, payload, label }: any) => {
+    console.log('Tooltip payload:', payload);
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
         <div className="bg-white p-4 border border-slate-200 rounded-lg shadow-lg">
           <p className="font-medium text-slate-800">{`Date: ${label}`}</p>
           <p className="text-blue-600">
-            {`Conversion Rate: ${data.conversion_rate}%`}
+            {`Taxa de Conversão: ${data.conversionRate}%`}
           </p>
-          <p className="text-slate-600">
-            {`Conversions: ${data.total_conversions.toLocaleString()}`}
-          </p>
-          <p className="text-slate-600">
-            {`Total Sends: ${data.total_sends.toLocaleString()}`}
-          </p>
+          <p className="text-slate-600">{`Conversões: ${data.totalConverts}`}</p>
+          <p className="text-slate-600">{`Total de Envios: ${data.totalSends}`}</p>
         </div>
       );
     }
@@ -100,7 +97,7 @@ export const ConversionChart: React.FC<ConversionChartProps> = ({
           <Tooltip content={<CustomTooltip />} />
           <Area
             type="monotone"
-            dataKey="conversion_rate"
+            dataKey="conversionRate"
             stroke="#3B82F6"
             strokeWidth={3}
             fill="url(#conversionGradient)"

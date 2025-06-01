@@ -1,13 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetcher } from '@/services/api';
 import { format } from 'date-fns';
+import type { ConversionRateEvolution } from '@/components/conversion-dashboard.component';
 
 export interface ConversionData {
   channel: string;
   day: string;
   conversionRate: number;
   totalSends: number;
-  totalConversions: number;
+  totalConverts: number;
 }
 
 interface Params {
@@ -26,7 +27,7 @@ export const useConversionRates = ({
   const formattedStart = format(startDate, 'yyyy-MM-dd');
   const formattedEnd = format(endDate, 'yyyy-MM-dd');
 
-  return useQuery<ConversionData[]>({
+  return useQuery<ConversionRateEvolution>({
     queryKey: ['conversionRates', formattedStart, formattedEnd, channel, limit],
     queryFn: () =>
       fetcher(
