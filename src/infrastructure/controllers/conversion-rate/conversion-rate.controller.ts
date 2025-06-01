@@ -11,7 +11,7 @@ export class ConversionRateController {
     name: 'channel',
     required: true,
     type: String,
-    enum: ['email', 'wpp', 'MOBILE'],
+    enum: ['email', 'wpp', 'MOBILE', 'all'],
   })
   @ApiQuery({
     name: 'startDate',
@@ -26,12 +26,12 @@ export class ConversionRateController {
   @ApiQuery({
     name: 'page',
     required: false,
-    type: Number,
+    type: String,
   })
   @ApiQuery({
     name: 'limit',
     required: false,
-    type: Number,
+    type: String,
   })
   @ApiOperation({ summary: 'Retorna a evolução da taxa de conversão' })
   @Get()

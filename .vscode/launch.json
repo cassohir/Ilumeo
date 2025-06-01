@@ -9,6 +9,20 @@
       "port": 9229,
       "localRoot": "${workspaceFolder}",
       "remoteRoot": "/app"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Local",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "start:debug"
+      ],
+      "console": "integratedTerminal"
     }
   ]
 }

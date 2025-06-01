@@ -5,7 +5,7 @@ export class CreateIndexForOptimization1748468201098
 {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
-            CREATE INDEX idx_origin_created_at_status
+            CREATE INDEX IF NOT EXISTS idx_origin_created_at_status
             ON inside.users_surveys_responses_aux (origin, created_at DESC, response_status_id);
         `);
   }

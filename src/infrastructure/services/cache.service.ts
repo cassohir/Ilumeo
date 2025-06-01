@@ -12,8 +12,7 @@ export class CacheService {
   ) {}
 
   async set(key: string, value: any, ttl: number) {
-    await this.cacheManager.del(encodeStringToBase64(key));
-    await this.cacheManager.set(encodeStringToBase64(key), value, ttl);
+    await this.cacheManager.set(key, value, ttl);
   }
   async delete(key: string) {
     await this.cacheManager.del(encodeStringToBase64(key));

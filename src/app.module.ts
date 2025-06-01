@@ -9,8 +9,8 @@ import { AppModules } from './infrastructure/modules.module';
 import { AddRequestId } from './shared/middlewares/add-request-id.middleware';
 import { LoggerMiddleware } from './shared/middlewares/logger.middleware';
 import { ScheduleModule } from '@nestjs/schedule';
-import { CacheModule } from '@nestjs/cache-manager';
 import { RedisOptions } from './infrastructure/config/database/redis.config';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [

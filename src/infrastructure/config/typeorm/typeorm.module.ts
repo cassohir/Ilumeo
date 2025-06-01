@@ -15,7 +15,9 @@ export const getTypeOrmModuleOptions = (
     username: configService.getDatabaseUser(),
     password: configService.getDatabasePassword(),
     database: configService.getDatabaseName(),
-    entities: [__dirname + '/../../../domain/entities/*.entity{.ts,.js}'],
+    entities: [
+      __dirname + '/../../../domain/entities/inside-schema/*.entity{.ts,.js}',
+    ],
     schema: 'inside',
     // synchronize: configService.getDatabaseSync(),
     migrations: ['./migrations/*{.ts,.js}'],

@@ -18,6 +18,7 @@ const getRedisConfig = (configService: ConfigService) => {
   const url = configService.get<string>(cache.REDIS_URL);
 
   if (url) {
+    console.log(`Using Redis URL: ${url}`);
     return { store: redisStore, url };
   }
 
