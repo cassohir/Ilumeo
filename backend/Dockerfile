@@ -7,4 +7,4 @@ RUN yarn
 COPY . .
 
 EXPOSE 3333 9229
-CMD ["yarn orm:run && yarn start:dev"]
+CMD ["yarn orm:start && yarn orm:run && yarn start:dev"]
