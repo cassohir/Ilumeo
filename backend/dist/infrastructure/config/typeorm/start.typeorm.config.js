@@ -6,7 +6,6 @@ const createSchema = async () => {
     try {
         await typeorm_config_1.default.initialize();
         const queryRunner = typeorm_config_1.default.createQueryRunner();
-        console.log(queryRunner);
         await queryRunner.startTransaction();
         await queryRunner.query(`CREATE SCHEMA IF NOT EXISTS inside;`);
         await queryRunner.commitTransaction();

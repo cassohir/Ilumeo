@@ -5,7 +5,6 @@ export const createSchema = async () => {
     await DataSource.initialize();
 
     const queryRunner = DataSource.createQueryRunner();
-    console.log(queryRunner);
 
     await queryRunner.startTransaction();
     await queryRunner.query(`CREATE SCHEMA IF NOT EXISTS inside;`);

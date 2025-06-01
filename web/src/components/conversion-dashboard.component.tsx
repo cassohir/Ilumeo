@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -15,26 +15,50 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { FilterIcon } from 'lucide-react';
-// import { format } from 'date-fns';
 import type { DateRange } from 'react-day-picker';
 import { DatePickerWithRange } from './date-picker-with-range.component';
+import { ConversionChart } from './conversion-chart';
+import { useConversionRates } from '@/hooks/useConversionRates';
 
 export interface ConversionData {
   channel: string;
   day: string;
-  conversion_rate: number;
-  total_sends: number;
-  total_conversions: number;
+  conversionRate: number;
+  totalSends: number;
+  totalConversions: number;
 }
 
 const ConversionDashboard = () => {
   const [selectedChannel, setSelectedChannel] = useState<string>('email');
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
-    from: new Date(2025, 4, 1), // May 1st, 2025
-    to: new Date(2025, 4, 30), // May 30th, 2025
+    from: new Date(2025, 4, 1), // 1 de maio de 2025
+    to: new Date(2025, 4, 30), // 30 de maio de 2025
   });
-  const [data, setData] = useState<ConversionData[]>([]);
-  const [loading, setLoading] = useState(false);
+
+  const {
+    data = [],
+    isLoading,
+    refetch,
+  } = useConversionRates({
+    startDate: dateRange?.from ?? new Date(),
+    endDate: dateRange?.to ?? new Date(),
+    channel: selectedChannel,
+    limit: 100,
+  });
+
+  // Cálculos de métricas agregadas
+  const averageConversionRate =
+    data.length > 0
+      ? (
+          data.reduce((sum, item) => sum + item.conversionRate, 0) / data.length
+        ).toFixed(2)
+      : '0.00';
+
+  const totalConversions = data.reduce(
+    (sum, item) => sum + item.totalConversions,
+    0,
+  );
+  const totalSends = data.reduce((sum, item) => sum + item.totalSends, 0);
 
   const channels = [
     { value: 'email', label: 'Email' },
@@ -42,50 +66,12 @@ const ConversionDashboard = () => {
     { value: 'mobile', label: 'Mobile' },
   ];
 
-  const fetchData = async () => {
-    if (!dateRange?.from || !dateRange?.to) return;
-
-    setLoading(true);
-    try {
-      // const apiData = await conversionRateAPI.getConversionRates({
-      //   startDate: format(dateRange.from, 'yyyy-MM-dd'),
-      //   endDate: format(dateRange.to, 'yyyy-MM-dd'),
-      //   channel: selectedChannel,
-      //   limit: 100,
-      // });
-      // setData(apiData);
-    } catch (error) {
-      console.error('Error fetching conversion data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [selectedChannel, dateRange]);
-
-  const averageConversionRate =
-    data.length > 0
-      ? (
-          data.reduce((sum, item) => sum + item.conversion_rate, 0) /
-          data.length
-        ).toFixed(2)
-      : '0.00';
-
-  const totalConversions = data.reduce(
-    (sum, item) => sum + item.total_conversions,
-    0,
-  );
-  const totalSends = data.reduce((sum, item) => sum + item.total_sends, 0);
-
   return (
-    // <div className="min-h-screen  bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 w-full bg-red-500 ">
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 md:p-8">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div className="text-center space-y-4">
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent bg-red-500">
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
             Dashboard de Taxa de Conversão
           </h1>
           <p className="text-xl text-slate-600 capitalize">
@@ -96,7 +82,7 @@ const ConversionDashboard = () => {
           </p>
         </div>
 
-        {/* Filters */}
+        {/* Filtros */}
         <Card className="shadow-lg border-0 bg-white/70 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-slate-800">
@@ -118,7 +104,7 @@ const ConversionDashboard = () => {
                   onValueChange={setSelectedChannel}
                 >
                   <SelectTrigger className="bg-white border-slate-200 hover:border-slate-300 transition-colors">
-                    <SelectValue placeholder="Select a channel" />
+                    <SelectValue placeholder="Selecione um canal" />
                   </SelectTrigger>
                   <SelectContent>
                     {channels.map((channel) => (
@@ -142,17 +128,17 @@ const ConversionDashboard = () => {
               </div>
 
               <Button
-                onClick={fetchData}
-                disabled={loading}
+                onClick={() => refetch()}
+                disabled={isLoading}
                 className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md transition-all duration-200 transform hover:scale-105"
               >
-                {loading ? 'Loading...' : 'Atualizar Dados'}
+                {isLoading ? 'Carregando...' : 'Atualizar Dados'}
               </Button>
             </div>
           </CardContent>
         </Card>
 
-        {/* Stats Cards */}
+        {/* Cards de Estatísticas */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card className="shadow-lg border-0 bg-gradient-to-br from-blue-500 to-blue-600 text-white">
             <CardHeader className="pb-2">
@@ -192,19 +178,19 @@ const ConversionDashboard = () => {
           </Card>
         </div>
 
-        {/* Chart */}
+        {/* Gráfico */}
         <Card className="shadow-lg border-0 bg-white/70 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="text-slate-800">
-              Conversion Rate Evolution
+              Evolução da Taxa de Conversão
             </CardTitle>
             <CardDescription>
-              Daily conversion rate trends for{' '}
-              {channels.find((c) => c.value === selectedChannel)?.label} channel
+              Taxa de conversão diária para o canal de{' '}
+              {channels.find((c) => c.value === selectedChannel)?.label}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {/* <ConversionChart data={data} loading={loading} /> */}
+            <ConversionChart data={data} loading={isLoading} />
           </CardContent>
         </Card>
       </div>

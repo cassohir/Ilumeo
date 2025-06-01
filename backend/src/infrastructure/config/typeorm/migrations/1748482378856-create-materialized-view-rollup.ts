@@ -16,7 +16,7 @@ export class CreateMaterializedViewRollup1748482378856
         `);
 
     await queryRunner.query(`
-            CREATE INDEX mv_daily_idx_origin_day
+            CREATE UNIQUE INDEX mv_daily_idx_origin_day
               ON inside.mv_daily_conversion_rate (origin, day);
         `);
   }

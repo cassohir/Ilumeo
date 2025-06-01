@@ -4,7 +4,7 @@ export class CreatePartitionByRange1748476048461 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`SELECT 1;`);
     //     await queryRunner.query(`
-    //             ALTER TABLE inside.users_surveys_responses_aux PARTITION BY RANGE (created_at);
+    //             CREATE TABLE IF NOT EXISTES inside.users_surveys_responses_aux (colunas... ) PARTITION BY RANGE (created_at);
     //         `);
 
     //     await queryRunner.query(`
