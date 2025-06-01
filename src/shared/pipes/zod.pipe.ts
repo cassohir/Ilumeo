@@ -2,7 +2,7 @@ import { PipeTransform, ArgumentMetadata, Injectable } from '@nestjs/common';
 import { ZodError, ZodSchema } from 'zod';
 
 /**
- * Global PIpe for Zod validation...
+ * Global Pipe for Zod validation...
  */
 @Injectable()
 export class ZodValidationPipe implements PipeTransform {
