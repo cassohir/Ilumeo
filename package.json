@@ -89,6 +89,15 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "\\.config\\.ts$",
+      "\\.provider\\.ts$",
+      "\\.module\\.ts$",
+      "\\.entity\\.ts$",
+      "\\.repository\\.ts$",
+      "\\.interface\\.ts$",
+      "/migrations/"
+    ]
   }
 }
