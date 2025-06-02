@@ -2,6 +2,17 @@
 
 Como requisito obrigatório esta documentação faz parte da explicação e detalhamneto do processo de desenvolvimento, escolhas feitas em termos de arquitetura, bem como, as escolhas feitas no quesito otimização de performance de trade-offs.
 
+
+# Demonstração
+* Demonstração através do swagger gerado na rota */docs* :
+https://github.com/user-attachments/assets/6da76c07-0992-463a-a757-8f0309f8c2b0
+
+* Demonstração através do projeto de frontend:
+
+
+
+
+
 # Evolução Temporal da Taxa de Conversão por Canal
 
 - Este repositório contém a implementação de um serviço Backend em Node.js (NestJS) com um Frontend em React para exibir a evolução temporal da taxa de conversão (por canal: e-mail, WhatsApp, push, Mobile etc.) a partir de um grande volume de dados (milhões de registros). A aplicação está completamente dockerizada e inclui testes..
