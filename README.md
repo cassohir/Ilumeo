@@ -2,17 +2,13 @@
 
 Como requisito obrigatório esta documentação faz parte da explicação e detalhamneto do processo de desenvolvimento, escolhas feitas em termos de arquitetura, bem como, as escolhas feitas no quesito otimização de performance de trade-offs.
 
-
 # Demonstração
-* Demonstração através do swagger gerado na rota */docs* :
-[Swagger-Demo](https://github.com/user-attachments/assets/6da76c07-0992-463a-a757-8f0309f8c2b0)
 
-* Demonstração através do projeto de frontend:
-[Front-End-Demo](https://github.com/user-attachments/assets/7cc409e8-ed20-40d2-a6bb-114b75a723b2)
+- Demonstração através do swagger gerado na rota _/docs_ :
+  [Swagger-Demo](https://github.com/user-attachments/assets/6da76c07-0992-463a-a757-8f0309f8c2b0)
 
-
-
-
+- Demonstração através do projeto de frontend:
+  [Front-End-Demo](https://github.com/user-attachments/assets/7cc409e8-ed20-40d2-a6bb-114b75a723b2)
 
 # Evolução Temporal da Taxa de Conversão por Canal
 
@@ -368,7 +364,7 @@ Inicialmente, implementei **offset-based pagination** (usando `LIMIT … OFFSET 
 
 **Por que não Golang?**
 
-- Pessoalmente, devido ao prazo e familiariadade, o avanço de protótipo para mim é mais rápido com NestJS + TypeORM.
+- Pessoalmente, devido ao prazo, mesmo sendo viável em Golang, o avanço do protótipo para mim é mais rápido com NestJS + TypeORM.
 - E porque o Nest tem esse ecossistema de bibliotecas maduras para agendamento e cache em Node.
 
 ## Possíveis Melhorias Futuras
