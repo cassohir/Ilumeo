@@ -1,6 +1,6 @@
 # Documentação Completa
 
-Como requisito obrigatório esta documentação faz parte da explicaçãoe detalhamneto do processo de desenvolvimento, escolhas feitas em termos de arquitetura, bem como, as escolhas fetias no questio otimização de performance de trade-offs.
+Como requisito obrigatório esta documentação faz parte da explicação e detalhamneto do processo de desenvolvimento, escolhas feitas em termos de arquitetura, bem como, as escolhas feitas no quesito otimização de performance de trade-offs.
 
 # Evolução Temporal da Taxa de Conversão por Canal
 
