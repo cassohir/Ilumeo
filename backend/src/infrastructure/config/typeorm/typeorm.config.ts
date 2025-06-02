@@ -16,7 +16,7 @@ const config: DataSourceOptions = {
   entities: [__dirname + '/../../../domain/entities/*.entity{.ts,.js}'],
   migrations: [__dirname + '/migrations/*{.ts,.js}'],
   synchronize: false,
-  ssl: { rejectUnauthorized: false },
+  // ssl: { rejectUnauthorized: false },
   logging: false,
   schema: 'inside',
 };

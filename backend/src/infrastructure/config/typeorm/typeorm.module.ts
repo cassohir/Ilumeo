@@ -19,7 +19,7 @@ export const getTypeOrmModuleOptions = (
       __dirname + '/../../../domain/entities/inside-schema/*.entity{.ts,.js}',
     ],
     schema: 'inside',
-    ssl: { rejectUnauthorized: false },
+    // ssl: { rejectUnauthorized: false },
     // synchronize: configService.getDatabaseSync(),
     migrations: ['./migrations/*{.ts,.js}'],
     migrationsTableName: 'migrations',
