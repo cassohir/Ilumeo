@@ -96,6 +96,10 @@
       "\\.module\\.ts$",
       "\\.entity\\.ts$",
       "\\.repository\\.ts$",
+      "app.controller.ts",
+      "main.ts",
+      ".logger\\.ts$",
+      "\\.job\\.ts$",
       "\\.interface\\.ts$",
       "/migrations/"
     ]
