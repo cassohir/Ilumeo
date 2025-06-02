@@ -14,7 +14,7 @@ export class ConversionRateService {
   ) {}
   async getConversionRateEvolution(query: ConversionRateQueryDto) {
     const { channel, startDate, endDate, page, limit, interval } = query;
-    const cacheKey = `conv:${interval}:{channel}:${startDate}:${endDate}:${page}:${limit}`;
+    const cacheKey = `conv:${interval}:${channel}:${startDate}:${endDate}:${page}:${limit}`;
 
     const cachedData = await this.cacheService.get(cacheKey);
     if (cachedData) {
