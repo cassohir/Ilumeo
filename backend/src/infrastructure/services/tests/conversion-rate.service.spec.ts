@@ -1,9 +1,12 @@
+// /src/services/conversion-rate.service.spec.ts
+
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { GetConversionRateEvolutionByFiltersUseCase } from '@/usecases/get-conversion-rate-evolution-by-filters.usecase';
 import {
   Channel,
   ConversionRateQueryDto,
+  Interval,
 } from '@/shared/dtos/conversion-rate.dto';
 import { ConversionRateService } from '../conversion-rate.service';
 import { CacheService } from '../cache.service';
@@ -51,188 +54,143 @@ describe('ConversionRateService', () => {
     jest.clearAllMocks();
   });
 
-  it('should return cached data if present and not call the use case', async () => {
+  it('should return cached result when cacheService.get resolves a value', async () => {
     const query: ConversionRateQueryDto = {
       channel: Channel.EMAIL,
       startDate: '2025-05-01',
-      endDate: '2025-05-07',
+      endDate: '2025-05-31',
+      interval: Interval.DAILY,
       page: '1',
       limit: '10',
     };
-    const cacheKey = `conv:${query.channel}:${query.startDate}:${query.endDate}:${query.page}:${query.limit}`;
-    const cachedResult = {
+    const cacheKey = `conv:daily:email:2025-05-01:2025-05-31:1:10`;
+    const cachedValue = {
       data: [
         {
           channel: 'email',
-          day: '2025-05-01',
-          total_sends: '100',
-          total_converts: '5',
-          conversion_rate: '0.05',
+          day: '2025-05-01T00:00:00.000Z',
+          totalSends: 100,
+          totalConverts: 10,
+          conversionRate: 10.0,
         },
       ],
-      pagination: { page: 1, limit: 10, totalItems: 1, totalPages: 1 },
+      pagination: {
+        page: 1,
+        limit: 10,
+        totalItems: 1,
+        totalPages: 1,
+      },
     };
-    mockCacheService.get.mockResolvedValue(cachedResult);
 
-    // Act
+    mockCacheService.get.mockResolvedValueOnce(cachedValue);
+
     const result =
       await conversionRateService.getConversionRateEvolution(query);
 
-    // Assert
     expect(cacheService.get).toHaveBeenCalledWith(cacheKey);
     expect(getConversionRateEvolutionByFilters.execute).not.toHaveBeenCalled();
-    expect(result).toBe(cachedResult);
+    expect(cacheService.set).not.toHaveBeenCalled();
+    expect(result).toBe(cachedValue);
   });
 
-  it('should fetch from use case, cache the result, and return the computed structure when no cache is found', async () => {
+  it('should call use-case and set cache when cacheService.get returns null', async () => {
     const query: ConversionRateQueryDto = {
-      channel: Channel.MOBILE,
+      channel: Channel.WHATSAPP,
       startDate: '2025-04-01',
-      endDate: '2025-04-30',
+      endDate: '2025-04-15',
+      interval: Interval.DAILY,
       page: '2',
       limit: '5',
     };
-    const cacheKey = `conv:${query.channel}:${query.startDate}:${query.endDate}:${query.page}:${query.limit}`;
-    mockCacheService.get.mockResolvedValue(null);
+    const cacheKey = `conv:daily:wpp:2025-04-01:2025-04-15:2:5`;
 
-    const sampleArray = [
+    mockCacheService.get.mockResolvedValueOnce(null);
+
+    const dummyData = [
       {
-        channel: Channel.EMAIL,
-        day: '2025-04-01',
-        total_sends: '50',
-        total_converts: '2',
-        conversion_rate: '0.04',
+        channel: 'wpp',
+        day: '2025-04-01T00:00:00.000Z',
+        totalSends: 200,
+        totalConverts: 20,
+        conversionRate: 10.0,
       },
       {
-        channel: Channel.EMAIL,
-        day: '2025-04-02',
-        total_sends: '60',
-        total_converts: '3',
-        conversion_rate: '0.05',
-      },
-      {
-        channel: Channel.EMAIL,
-        day: '2025-04-03',
-        total_sends: '55',
-        total_converts: '1',
-        conversion_rate: '0.018',
-      },
-      {
-        channel: Channel.EMAIL,
-        day: '2025-04-04',
-        total_sends: '65',
-        total_converts: '4',
-        conversion_rate: '0.061',
-      },
-      {
-        channel: Channel.EMAIL,
-        day: '2025-04-05',
-        total_sends: '70',
-        total_converts: '5',
-        conversion_rate: '0.071',
+        channel: 'wpp',
+        day: '2025-04-02T00:00:00.000Z',
+        totalSends: 250,
+        totalConverts: 25,
+        conversionRate: 10.0,
       },
     ];
-    mockGetConversionRateEvolutionByFilters.execute.mockResolvedValue(
-      sampleArray,
+    mockGetConversionRateEvolutionByFilters.execute.mockResolvedValueOnce(
+      dummyData,
     );
 
     const result =
       await conversionRateService.getConversionRateEvolution(query);
 
-    const expectedPage = Number(query.page) || 1;
-    const expectedLimit = Number(query.limit) || 10;
-    const expectedTotalItems = sampleArray.length;
-    const expectedTotalPages = Math.ceil(expectedTotalItems / expectedLimit);
-
-    const expectedResult = {
-      data: sampleArray,
-      pagination: {
-        page: expectedPage,
-        limit: expectedLimit,
-        totalItems: expectedTotalItems,
-        totalPages: expectedTotalPages,
-      },
-    };
-
-    // Assert
     expect(cacheService.get).toHaveBeenCalledWith(cacheKey);
     expect(getConversionRateEvolutionByFilters.execute).toHaveBeenCalledWith(
       query,
     );
-    expect(cacheService.set).toHaveBeenCalledWith(
-      cacheKey,
-      expectedResult,
-      3600,
-    );
-    expect(result).toEqual(expectedResult);
+
+    const expected = {
+      data: dummyData,
+      pagination: {
+        page: 2,
+        limit: 5,
+        totalItems: 2,
+        totalPages: 1,
+      },
+    };
+    expect(result).toEqual(expected);
+    expect(cacheService.set).toHaveBeenCalledWith(cacheKey, expected, 60 * 60);
   });
 
-  it('should handle missing page and limit by using defaults (page=1, limit=10)', async () => {
-    const query: Partial<ConversionRateQueryDto> = {
-      channel: Channel.WHATSAPP,
-      startDate: '2025-03-01',
-      endDate: '2025-03-15',
-    };
-    const normalizedQuery = {
-      channel: query.channel,
-      startDate: query.startDate,
-      endDate: query.endDate,
+  it('should always use the daily use-case regardless of interval value', async () => {
+    const query: ConversionRateQueryDto = {
+      channel: Channel.ALL,
+      startDate: '2025-02-01',
+      endDate: '2025-02-28',
+      interval: Interval.WEEKLY,
       page: '1',
-      limit: '10',
-    } as ConversionRateQueryDto;
+      limit: '3',
+    };
+    const cacheKey = `conv:weekly:all:2025-02-01:2025-02-28:1:3`;
 
-    const cacheKey = `conv:${normalizedQuery.channel}:${normalizedQuery.startDate}:${normalizedQuery.endDate}:${normalizedQuery.page}:${normalizedQuery.limit}`;
-    mockCacheService.get.mockResolvedValue(null);
+    mockCacheService.get.mockResolvedValueOnce(null);
 
-    const sampleArray = [
+    const dummyData = [
       {
-        channel: Channel.WHATSAPP,
-        day: '2025-03-01',
-        total_sends: '80',
-        total_converts: '10',
-        conversion_rate: '0.125',
-      },
-      {
-        channel: Channel.WHATSAPP,
-        day: '2025-03-02',
-        total_sends: '90',
-        total_converts: '9',
-        conversion_rate: '0.1',
+        channel: 'all',
+        day: '2025-02-01T00:00:00.000Z',
+        totalSends: 300,
+        totalConverts: 30,
+        conversionRate: 10.0,
       },
     ];
-    mockGetConversionRateEvolutionByFilters.execute.mockResolvedValue(
-      sampleArray,
+    mockGetConversionRateEvolutionByFilters.execute.mockResolvedValueOnce(
+      dummyData,
     );
 
     const result =
-      await conversionRateService.getConversionRateEvolution(normalizedQuery);
-
-    const expectedPage = 1;
-    const expectedLimit = 10;
-    const expectedTotalItems = sampleArray.length;
-
-    console.log('TESTE:', Math.ceil(expectedTotalItems / expectedLimit));
-    const expectedTotalPages = Math.ceil(expectedTotalItems / expectedLimit);
-
-    const expectedResult = {
-      data: sampleArray,
-      pagination: {
-        page: expectedPage,
-        limit: expectedLimit,
-        totalItems: expectedTotalItems,
-        totalPages: expectedTotalPages,
-      },
-    };
+      await conversionRateService.getConversionRateEvolution(query);
 
     expect(cacheService.get).toHaveBeenCalledWith(cacheKey);
     expect(getConversionRateEvolutionByFilters.execute).toHaveBeenCalledWith(
-      normalizedQuery,
+      query,
     );
-    expect(cacheService.set).toHaveBeenCalledWith(
-      cacheKey,
-      expectedResult,
-      3600,
-    );
-    expect(result).toEqual(expectedResult);
+
+    const expected = {
+      data: dummyData,
+      pagination: {
+        page: 1,
+        limit: 3,
+        totalItems: 1,
+        totalPages: 1,
+      },
+    };
+    expect(result).toEqual(expected);
+    expect(cacheService.set).toHaveBeenCalledWith(cacheKey, expected, 60 * 60);
   });
 });
