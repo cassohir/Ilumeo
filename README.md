@@ -1,6 +1,6 @@
 # Documentação Completa
 
-Como requisito obrigatório esta documentação faz parte da explicação e detalhamneto do processo de desenvolvimento, escolhas feitas em termos de arquitetura, bem como, as escolhas feitas no quesito otimização de performance de trade-offs.
+Como requisito obrigatório esta documentação faz parte da explicação e detalhamento do processo de desenvolvimento, escolhas feitas em termos de arquitetura, bem como, as escolhas feitas no quesito otimização de performance de trade-offs.
 
 # Demonstração
 
@@ -122,7 +122,7 @@ psql -h localhost -p 5432 -U postgres -d postgres -f ./case_tech_lead.sql
 - **ATENÇÃO:** Não foi necessarimamente requisitado, mas eu executei um script, que inclusive, não é o melhor no quesito desempenho, mas garante uma boa aleatoriedade, para atualizar as datas dos registros e a distribuição dos canais e status de forma aleatória.
   _"Mas Cássio, por que não criar uma data aleatória durante o próprio insert do arquivo `case_tech_lead.sql`?"_
 
-_" - Nesse caso optei por deixar a arquitetura limpa e como é um projeto público, não quiz deixar fixo para que todos tenham o mesmo comportamento que obtive e nem que conforme o projeto pudesse crescer novas inserções continuassem sendo aleatórias. Ou seja, mesmo demorando um bom tempo para rodar o script, é um comportamento pessoal e consciente que escolhi"_
+_" - Nesse caso optei por deixar a arquitetura limpa e como é um projeto público, não quis deixar fixo para que todos tenham o mesmo comportamento que obtive e nem que conforme o projeto pudesse crescer novas inserções continuassem sendo aleatórias. Ou seja, mesmo demorando um bom tempo para rodar o script, é um comportamento pessoal e consciente que escolhi"_
 
 - Veja abaixo o SQL utilizado:
 
